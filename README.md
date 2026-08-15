@@ -1,6 +1,7 @@
 # GetHere — Boutique Multiservices & Lifestyle
 
-Site e-commerce complet pour **GetHere**, une boutique multiservices basée à Cotonou, Bénin. Mode, beauté, maison et accessoires réunis en un seul endroit, avec commande directe via WhatsApp.
+Site e-commerce complet pour une boutique multiservices basée à **Porto-Novo, Bénin**.  
+Commande directe via **WhatsApp** · Livraison dans tout le Bénin.
 
 ---
 
@@ -8,73 +9,14 @@ Site e-commerce complet pour **GetHere**, une boutique multiservices basée à C
 
 | Outil | Rôle |
 |---|---|
-| [React 19](https://react.dev) | UI |
-| [Vite 8](https://vite.dev) | Bundler / dev server |
-| [React Router v7](https://reactrouter.com) | Navigation SPA |
-| CSS Modules custom | Styles (pas de framework CSS) |
+| React 19 | UI / composants |
+| Vite 8 | Build & dev server |
+| React Router DOM | Navigation multi-pages |
 | Bootstrap Icons | Icônes |
 | Google Fonts — Outfit | Typographie |
+| CSS Variables | Thème clair / sombre |
 
----
-
-## Pages
-
-| Route | Description |
-|---|---|
-| `/` | Accueil — hero carrousel, catégories, produits vedettes, promo, témoignages |
-| `/boutique` | Tous les produits — filtres catégorie, prix, tri |
-| `/produit/:id` | Détail produit — tailles, couleurs, bouton commande WhatsApp |
-| `/categories` | Grille visuelle de toutes les catégories |
-| `/a-propos` | Histoire, mission, valeurs, stats |
-| `/contact` | Formulaire → redirection WhatsApp + FAQ |
-
----
-
-## Fonctionnalités
-
-- **Commande WhatsApp** — chaque produit génère un message pré-rempli avec nom, taille, couleur et prix vers le `+229 0129140143`
-- **Mode clair / sombre** — toggle dans le header, préférence sauvegardée en `localStorage`
-- **Carrousel hero** — 3 images locales défilent automatiquement toutes les 2 secondes
-- **Recherche** — barre de recherche dans le header, filtre les produits en temps réel
-- **Responsive** — mobile first, grilles adaptatives, menu burger plein écran
-- **Hero mobile** — texte superposé sur l'image plein écran avec fond dégradé semi-transparent
-- **Données fictives** — 25 produits répartis en 6 catégories avec prix en FCFA
-
----
-
-## Catégories
-
-1. Vêtements (hommes & femmes)
-2. Chaussures
-3. Perruques & Mèches
-4. Bijoux & Accessoires
-5. Cosmétiques & Beauté
-6. Cuisine & Maison
-
----
-
-## Installation & lancement
-
-```bash
-# Installer les dépendances
-npm install
-
-# Lancer en développement (localhost)
-npm run dev
-
-# Accessible sur le réseau local (même Wi-Fi)
-# → http://<votre-IP>:5173
-```
-
-Le serveur est configuré avec `host: true` dans `vite.config.js` — le site est accessible depuis un téléphone connecté au même réseau Wi-Fi.
-
-```bash
-# Build de production
-npm run build
-
-# Prévisualiser le build
-npm run preview
-```
+Pas de framework CSS externe. Tout le style est fait en CSS natif avec variables custom.
 
 ---
 
@@ -82,33 +24,110 @@ npm run preview
 
 ```
 src/
-├── assets/
-│   └── image/          # logo.webp + images hero (1.png, 2.png, 3.png)
-├── components/
-│   ├── Navbar.jsx/.css
-│   ├── Footer.jsx/.css
-│   └── ProductCard.jsx/.css
+├── assets/image/
+│   ├── logo.webp          # Logo GetHere
+│   ├── hero.png           # Image hero desktop
+│   ├── hero_mobile.png    # Image hero mobile
+│   ├── 1.png              # Image promo + carrousel
+│   ├── 2.png
+│   └── 3.png
+│
 ├── context/
-│   └── ThemeContext.jsx # Gestion dark/light mode
-├── data/
-│   └── products.js     # Produits fictifs + helpers (formatPrice, WhatsApp link)
+│   ├── ThemeContext.jsx   # Mode clair / sombre (localStorage)
+│   └── CartContext.jsx    # Panier global (add, remove, qty, WA message)
+│
+├── components/
+│   ├── Navbar.jsx / .css  # Header fixe, recherche, panier badge, menu mobile
+│   ├── Footer.jsx / .css  # Footer 4 colonnes
+│   └── ProductCard.jsx / .css  # Carte produit avec bouton "Ajouter au panier"
+│
 ├── pages/
-│   ├── Home.jsx/.css
-│   ├── Shop.jsx/.css
-│   ├── ProductDetail.jsx/.css
-│   ├── Categories.jsx/.css
-│   ├── About.jsx/.css
-│   └── Contact.jsx/.css
-├── App.jsx             # Routes + layout global
-├── App.css
-├── index.css           # Variables CSS thème (dark/light) + reset
-└── main.jsx
+│   ├── Home.jsx / .css        # Page d'accueil complète
+│   ├── Shop.jsx / .css        # Boutique avec filtres, tri, sidebar
+│   ├── ProductDetail.jsx / .css  # Détail produit + galerie multi-images
+│   ├── Categories.jsx / .css  # Toutes les catégories
+│   ├── Cart.jsx / .css        # Panier + commande WhatsApp groupée
+│   ├── About.jsx / .css       # À propos
+│   └── Contact.jsx / .css     # Contact + FAQ
+│
+└── data/
+    └── products.js   # 25 produits fictifs, catégories, formatPrice, WA link
 ```
 
 ---
 
-## Contact WhatsApp
+## Pages
 
-Numéro configuré : **+229 0129140143**  
-Défini dans `src/data/products.js` → `WHATSAPP_NUMBER`  
-Tous les liens `wa.me` du site pointent vers ce numéro.
+| Route | Page |
+|---|---|
+| `/` | Accueil |
+| `/boutique` | Boutique (filtres par catégorie, prix, tri) |
+| `/produit/:id` | Détail produit |
+| `/categories` | Toutes les catégories |
+| `/panier` | Panier |
+| `/a-propos` | À propos |
+| `/contact` | Contact & FAQ |
+
+---
+
+## Fonctionnalités clés
+
+**Panier**
+- Ajout depuis chaque carte produit ou page détail (avec taille/couleur)
+- Badge compteur dans la navbar
+- Page panier : contrôle de quantité, suppression, vider tout
+- Un seul message WhatsApp avec tous les articles, tailles, couleurs et total FCFA
+
+**Galerie produit**
+- Jusqu'à 3 images par produit
+- Navigation par flèches ou thumbnails
+- Animation fade au changement d'image
+
+**Carrousel hero**
+- Image `hero.png` sur desktop, `hero_mobile.png` sur mobile
+- Texte superposé avec dégradé
+
+**Carrousel promo**
+- 3 images (`1.png`, `2.png`, `3.png`) en défilement horizontal automatique toutes les 2s
+- Dots de navigation
+
+**Thème**
+- Toggle clair / sombre dans le header
+- Choix sauvegardé en `localStorage`
+- Toutes les couleurs via CSS custom properties (`--bg`, `--text`, `--accent`…)
+
+**Responsive**
+- Mobile first sur toutes les pages
+- Menu burger plein écran sur mobile
+- Hero mobile : image pleine fenêtre (`100svh`), texte en overlay
+
+---
+
+## Catégories
+
+- Vêtements (hommes & femmes)
+- Chaussures
+- Perruques & Mèches
+- Bijoux & Accessoires
+- Cosmétiques & Beauté
+- Cuisine & Maison
+
+---
+
+## Démarrage
+
+```bash
+npm install
+npm run dev
+```
+
+Le serveur démarre sur `http://localhost:5173`.  
+Accessible depuis un téléphone sur le même réseau Wi-Fi via l'URL **Network** affichée dans le terminal.
+
+---
+
+## Contact boutique
+
+**WhatsApp** : +229 01 29 14 01 43  
+**Localisation** : Porto-Novo, Bénin  
+**Horaires** : Lun – Sam · 8h – 20h
