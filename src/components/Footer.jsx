@@ -11,7 +11,7 @@ export default function Footer() {
             <img src={logo} alt="GetHere" />
             <span>Get<em>Here</em></span>
           </Link>
-          <p>Boutique multiservices & lifestyle à Cotonou. Mode, beauté, maison — tout en un.</p>
+          <p>Boutique multiservices & lifestyle à Porto-Novo. Mode, beauté, maison — tout en un.</p>
           <div className="footer__socials">
             <a href="https://wa.me/2290129140143" target="_blank" rel="noreferrer" aria-label="WhatsApp"><i className="bi bi-whatsapp" /></a>
             <a href="#!" aria-label="Instagram"><i className="bi bi-instagram" /></a>
@@ -52,7 +52,7 @@ export default function Footer() {
             </li>
             <li>
               <i className="bi bi-geo-alt" />
-              <span>Cotonou, Bénin</span>
+              <span>Porto-Novo, Bénin</span>
             </li>
             <li>
               <i className="bi bi-clock" />

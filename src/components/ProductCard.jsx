@@ -1,11 +1,23 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { formatPrice } from "../data/products";
+import { useCart } from "../context/CartContext";
 import "./ProductCard.css";
 
 export default function ProductCard({ product, variant = "normal" }) {
+  const { add } = useCart();
+  const [added, setAdded] = useState(false);
+
   const discount = product.oldPrice
     ? Math.round((1 - product.price / product.oldPrice) * 100)
     : null;
+
+  const handleAdd = (e) => {
+    e.preventDefault();
+    add(product);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1200);
+  };
 
   return (
     <article className={`pcard pcard--${variant}`}>
@@ -14,12 +26,8 @@ export default function ProductCard({ product, variant = "normal" }) {
         <div className="pcard__img-overlay">
           <span className="pcard__view-label">Voir le produit</span>
         </div>
-        {discount && (
-          <span className="pcard__discount">−{discount}%</span>
-        )}
-        {product.badge === "Nouveau" && !discount && (
-          <span className="pcard__new">New</span>
-        )}
+        {discount && <span className="pcard__discount">−{discount}%</span>}
+        {product.badge === "Nouveau" && !discount && <span className="pcard__new">New</span>}
       </Link>
 
       <div className="pcard__info">
@@ -42,9 +50,13 @@ export default function ProductCard({ product, variant = "normal" }) {
               <span className="pcard__price-old">{formatPrice(product.oldPrice)}</span>
             )}
           </div>
-          <Link to={`/produit/${product.id}`} className="pcard__order-btn" aria-label="Commander">
-            <i className="bi bi-whatsapp" />
-          </Link>
+          <button
+            className={`pcard__add-btn ${added ? "added" : ""}`}
+            onClick={handleAdd}
+            aria-label="Ajouter au panier"
+          >
+            <i className={`bi bi-${added ? "check" : "bag-plus"}`} />
+          </button>
         </div>
       </div>
     </article>

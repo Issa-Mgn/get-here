@@ -1,6 +1,7 @@
 ﻿import { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import { useCart } from "../context/CartContext";
 import logo from "../assets/image/logo.webp";
 import "./Navbar.css";
 
@@ -10,6 +11,7 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchVal, setSearchVal] = useState("");
   const { theme, toggle } = useTheme();
+  const { count } = useCart();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,6 +61,10 @@ export default function Navbar() {
             <button className="nav__icon-btn" onClick={toggle} aria-label="Changer le thème">
               <i className={`bi bi-${theme === "dark" ? "sun" : "moon"}`} />
             </button>
+            <Link to="/panier" className="nav__cart-btn" aria-label="Panier">
+              <i className="bi bi-bag" />
+              {count > 0 && <span className="nav__cart-badge">{count}</span>}
+            </Link>
             <a href="https://wa.me/2290129140143" target="_blank" rel="noreferrer" className="nav__order-btn">
               <i className="bi bi-whatsapp" />
               <span>Commander</span>
@@ -70,6 +76,10 @@ export default function Navbar() {
             <button className="nav__icon-btn" onClick={toggle} aria-label="Changer le thème">
               <i className={`bi bi-${theme === "dark" ? "sun" : "moon"}`} />
             </button>
+            <Link to="/panier" className="nav__cart-btn" aria-label="Panier">
+              <i className="bi bi-bag" />
+              {count > 0 && <span className="nav__cart-badge">{count}</span>}
+            </Link>
             <button className="nav__icon-btn" onClick={() => setSearchOpen(s => !s)} aria-label="Rechercher">
               <i className={`bi bi-${searchOpen ? "x-lg" : "search"}`} />
             </button>

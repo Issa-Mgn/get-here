@@ -49,7 +49,7 @@ export default function Contact() {
                 <div className="info-icon"><i className="bi bi-geo-alt-fill" /></div>
                 <div>
                   <h4>Localisation</h4>
-                  <span>Cotonou, Bénin</span>
+                  <span>Porto-Novo, Bénin</span>
                   <small>Livraison dans tout le Bénin</small>
                 </div>
               </div>
@@ -66,7 +66,7 @@ export default function Contact() {
                 <div>
                   <h4>Livraison</h4>
                   <span>24h – 72h selon localisation</span>
-                  <small>Cotonou et tout le Bénin</small>
+                  <small>Porto-Novo et tout le Bénin</small>
                 </div>
               </div>
             </div>
@@ -143,7 +143,7 @@ export default function Contact() {
             {[
               { q: "Comment passer une commande ?", a: "Choisissez un produit, cliquez sur le bouton WhatsApp et suivez les instructions. Notre équipe vous répond dans les 30 minutes." },
               { q: "Quels modes de paiement ?", a: "Paiement à la livraison, MTN Mobile Money et Moov Money sont tous acceptés." },
-              { q: "Livrez-vous hors de Cotonou ?", a: "Oui, nous livrons dans tout le Bénin. Le délai est de 48h à 72h selon votre zone." },
+              { q: "Livrez-vous hors de Porto-Novo ?", a: "Oui, nous livrons dans tout le Bénin. Le délai est de 48h à 72h selon votre zone." },
               { q: "Puis-je retourner un produit ?", a: "Oui, sous 48h après réception si le produit est défectueux ou ne correspond pas. Contactez-nous sur WhatsApp." },
               { q: "Les prix sont-ils négociables ?", a: "Pour les commandes groupées ou certaines promos, contactez-nous directement sur WhatsApp." },
               { q: "Comment suivre ma commande ?", a: "Vous recevez des mises à jour via WhatsApp à chaque étape, de la confirmation à la livraison." },

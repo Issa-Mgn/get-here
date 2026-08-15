@@ -76,12 +76,15 @@
 .pcard__price-old {
   font-size: 0.68rem; color: var(--text-3); text-decoration: line-through;
 }
-.pcard__order-btn {
-  width: 30px; height: 30px;
-  background: var(--wa);
+.pcard__add-btn {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  border: none;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 0.82rem; text-decoration: none; flex-shrink: 0;
-  transition: background 0.15s;
+  color: #fff; font-size: 0.9rem; flex-shrink: 0;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
 }
-.pcard__order-btn:hover { background: var(--wa-hover); }
+.pcard__add-btn:hover { background: #cc4400; }
+.pcard__add-btn.added { background: #25d366; transform: scale(1.1); }

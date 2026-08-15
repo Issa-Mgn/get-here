@@ -1,6 +1,7 @@
 ﻿import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { ThemeProvider } from "./context/ThemeContext";
+import { CartProvider } from "./context/CartContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -9,6 +10,7 @@ import ProductDetail from "./pages/ProductDetail";
 import Categories from "./pages/Categories";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import Cart from "./pages/Cart";
 import "./App.css";
 
 function ScrollToTop() {
@@ -30,6 +32,7 @@ function AppLayout() {
           <Route path="/categories" element={<Categories />} />
           <Route path="/a-propos" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/panier" element={<Cart />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
@@ -53,9 +56,11 @@ function NotFound() {
 export default function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <AppLayout />
-      </BrowserRouter>
+      <CartProvider>
+        <BrowserRouter>
+          <AppLayout />
+        </BrowserRouter>
+      </CartProvider>
     </ThemeProvider>
   );
 }

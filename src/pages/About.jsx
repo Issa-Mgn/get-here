@@ -17,7 +17,7 @@ export default function About() {
             <span className="label-small">Notre histoire</span>
             <h1>Bienvenue<br />chez <span className="orange">GetHere.</span></h1>
             <p>
-              Née à Cotonou, GetHere est une boutique multiservices pensée pour
+              Née à Porto-Novo, GetHere est une boutique multiservices pensée pour
               simplifier le shopping quotidien — mode, beauté, maison, tout en un.
             </p>
             <a href="https://wa.me/2290129140143" className="btn-wa" target="_blank" rel="noreferrer">
@@ -82,7 +82,7 @@ export default function About() {
               { val: "200+", label: "Produits disponibles", icon: "bi-box-seam" },
               { val: "500+", label: "Clients satisfaits", icon: "bi-people" },
               { val: "6", label: "Catégories", icon: "bi-grid" },
-              { val: "24h", label: "Livraison Cotonou", icon: "bi-truck" },
+              { val: "24h", label: "Livraison Porto-Novo", icon: "bi-truck" },
             ].map((s, i) => (
               <div key={i} className="stat-card">
                 <i className={`bi ${s.icon}`} />

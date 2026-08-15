@@ -1,15 +1,20 @@
 ﻿import { useParams, Link } from "react-router-dom";
 import { useState } from "react";
 import { products, formatPrice, categories } from "../data/products";
+import { useCart } from "../context/CartContext";
 import ProductCard from "../components/ProductCard";
 import "./ProductDetail.css";
 
 export default function ProductDetail() {
   const { id } = useParams();
   const product = products.find(p => p.id === Number(id));
-  const [selectedSize, setSelectedSize] = useState(null);
+  const { add } = useCart();
+
+  const [activeImg, setActiveImg]     = useState(0);
+  const [selectedSize, setSelectedSize]   = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [tab, setTab] = useState("description");
+  const [addedToCart, setAddedToCart] = useState(false);
 
   if (!product) {
     return (
@@ -22,18 +27,28 @@ export default function ProductDetail() {
     );
   }
 
-  const catName = categories.find(c => c.id === product.category)?.label || product.category;
-  const related = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+  const gallery  = product.images?.length ? product.images : [product.image];
+  const catName  = categories.find(c => c.id === product.category)?.label || product.category;
+  const related  = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : null;
 
+  const handleAddToCart = () => {
+    add(product, selectedSize, selectedColor);
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 1400);
+  };
+
   const buildWhatsAppLink = () => {
-    const sizeStr = selectedSize ? `\nTaille : *${selectedSize}*` : "";
+    const sizeStr  = selectedSize  ? `\nTaille : *${selectedSize}*`  : "";
     const colorStr = selectedColor ? `\nCouleur : *${selectedColor}*` : "";
     const msg = encodeURIComponent(
-      `Bonjour GetHere ! 👋\n\nJe veux commander :\n*${product.name}*${sizeStr}${colorStr}\n\nPrix : *${formatPrice(product.price)}*\n\nPouvez-vous confirmer la disponibilité et les modalités de livraison ? Merci !`
+      `Bonjour GetHere ! 👋\n\nJe veux commander :\n*${product.name}*${sizeStr}${colorStr}\n\nPrix : *${formatPrice(product.price)}*\n\nMerci de confirmer la disponibilité et les modalités de livraison 🙏`
     );
     return `https://wa.me/2290129140143?text=${msg}`;
   };
+
+  const prev = () => setActiveImg(i => (i - 1 + gallery.length) % gallery.length);
+  const next = () => setActiveImg(i => (i + 1) % gallery.length);
 
   return (
     <main className="detail-page">
@@ -55,16 +70,57 @@ export default function ProductDetail() {
       <section className="detail-section">
         <div className="detail-grid">
 
-          {/* Gallery */}
+          {/* ── Galerie ── */}
           <div className="detail-gallery">
-            <div className="main-img">
-              <img src={product.image} alt={product.name} />
+            {/* Image principale */}
+            <div className="gallery-main">
+              <img
+                key={activeImg}
+                src={gallery[activeImg]}
+                alt={`${product.name} ${activeImg + 1}`}
+                className="gallery-main__img"
+              />
               {discount && <span className="img-badge img-badge--promo">−{discount}%</span>}
               {product.badge === "Nouveau" && !discount && <span className="img-badge img-badge--new">New</span>}
+
+              {/* Flèches nav si plus d'une image */}
+              {gallery.length > 1 && (
+                <>
+                  <button className="gallery-arrow gallery-arrow--prev" onClick={prev} aria-label="Image précédente">
+                    <i className="bi bi-chevron-left" />
+                  </button>
+                  <button className="gallery-arrow gallery-arrow--next" onClick={next} aria-label="Image suivante">
+                    <i className="bi bi-chevron-right" />
+                  </button>
+                </>
+              )}
+
+              {/* Compteur */}
+              {gallery.length > 1 && (
+                <div className="gallery-counter">
+                  {activeImg + 1}/{gallery.length}
+                </div>
+              )}
             </div>
+
+            {/* Thumbnails */}
+            {gallery.length > 1 && (
+              <div className="gallery-thumbs">
+                {gallery.map((img, i) => (
+                  <button
+                    key={i}
+                    className={`gallery-thumb ${i === activeImg ? "is-active" : ""}`}
+                    onClick={() => setActiveImg(i)}
+                    aria-label={`Voir image ${i + 1}`}
+                  >
+                    <img src={img} alt={`${product.name} ${i + 1}`} />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Info */}
+          {/* ── Info ── */}
           <div className="detail-info">
             <Link to={`/boutique?cat=${product.category}`} className="detail-cat">{catName}</Link>
             <h1>{product.name}</h1>
@@ -114,12 +170,19 @@ export default function ProductDetail() {
             )}
 
             <div className="detail-cta">
+              {/* Ajouter au panier */}
+              <button
+                className={`btn-add-cart ${addedToCart ? "added" : ""}`}
+                onClick={handleAddToCart}
+              >
+                <i className={`bi bi-${addedToCart ? "check-lg" : "bag-plus"}`} />
+                {addedToCart ? "Ajouté au panier !" : "Ajouter au panier"}
+              </button>
+
+              {/* Commander direct WA */}
               <a href={buildWhatsAppLink()} className="btn-order-main" target="_blank" rel="noreferrer">
                 <i className="bi bi-whatsapp" />
-                Commander sur WhatsApp
-              </a>
-              <a href="https://wa.me/2290129140143" className="btn-ask" target="_blank" rel="noreferrer">
-                <i className="bi bi-chat-dots" /> Poser une question
+                Commander via WhatsApp
               </a>
             </div>
 
@@ -135,7 +198,7 @@ export default function ProductDetail() {
       {/* Tabs */}
       <section className="tabs-section">
         <div className="tabs-nav">
-          {["description", "livraison", "avis"].map(t => (
+          {["description","livraison","avis"].map(t => (
             <button key={t} className={tab === t ? "active" : ""} onClick={() => setTab(t)}>
               {t === "description" ? "Description" : t === "livraison" ? "Livraison & Paiement" : "Avis clients"}
             </button>
@@ -154,11 +217,11 @@ export default function ProductDetail() {
           {tab === "livraison" && (
             <div className="tab-desc">
               <h4><i className="bi bi-truck" /> Livraison</h4>
-              <p>Livraison à Cotonou en 24h, partout au Bénin en 48–72h. Livraison à domicile disponible.</p>
+              <p>Livraison à Porto-Novo en 24h, partout au Bénin en 48–72h. Livraison à domicile disponible.</p>
               <h4><i className="bi bi-cash-coin" /> Paiement</h4>
               <p>Paiement à la livraison, MTN Mobile Money, Moov Money acceptés.</p>
               <h4><i className="bi bi-whatsapp" /> Commander</h4>
-              <p>Cliquez sur "Commander sur WhatsApp", précisez taille et couleur souhaitées. Notre équipe confirme votre commande rapidement.</p>
+              <p>Cliquez sur "Commander via WhatsApp" ou ajoutez au panier pour commander plusieurs articles à la fois.</p>
             </div>
           )}
           {tab === "avis" && (
