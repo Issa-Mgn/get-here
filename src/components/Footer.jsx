@@ -73,7 +73,7 @@ export default function Footer() {
 
       <div className="footer__bottom">
         <span>© {new Date().getFullYear()} GetHere — Tous droits réservés</span>
-        <span>Powered By Issa.dev <i className="bi bi-heart-fill" style={{ color: "#ff5500", fontSize: "0.65rem" }} /></span>
+        <span>Powered By Issa.dev</span>
       </div>
     </footer>
   );
