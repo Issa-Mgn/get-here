@@ -1,4 +1,4 @@
-
+﻿
 .hero {
   position: relative;
   width: 100%;
@@ -85,7 +85,7 @@
 
 .hero__btn-main {
   display: inline-flex; align-items: center; gap: 7px;
-  background: #fff; color: #080808;
+  background: #fff; color: var(--bg);
   font-size: 0.75rem; font-weight: 800; letter-spacing: 1px;
   text-transform: uppercase; padding: 12px 22px;
   text-decoration: none; border: 2px solid #fff;

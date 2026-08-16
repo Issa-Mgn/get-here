@@ -1,4 +1,4 @@
-/* ══ PRODUCT CARD ══════════════════════════════════════════ */
+﻿/* ══ PRODUCT CARD ══════════════════════════════════════════ */
 .pcard {
   background: var(--bg-2);
   display: flex;
@@ -87,4 +87,4 @@
   transition: background 0.15s, transform 0.15s;
 }
 .pcard__add-btn:hover { background: #cc4400; }
-.pcard__add-btn.added { background: #25d366; transform: scale(1.1); }
+.pcard__add-btn.added { background: var(--wa); transform: scale(1.1); }
