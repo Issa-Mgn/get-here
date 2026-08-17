@@ -1,18 +1,21 @@
 import { Link } from "react-router-dom";
-import { categories, products } from "../data/products";
+import { useProducts, useCategories } from "../hooks/useProducts";
 import ProductCard from "../components/ProductCard";
 import "./Categories.css";
 
 const CAT_IMGS = {
-  vetements: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=700&q=80",
-  chaussures: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700&q=80",
-  perruques: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=700&q=80",
+  vetements:   "https://images.unsplash.com/photo-1445205170230-053b83016050?w=700&q=80",
+  chaussures:  "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700&q=80",
+  perruques:   "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=700&q=80",
   accessoires: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=700&q=80",
   cosmetiques: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=700&q=80",
-  cuisine: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&q=80",
+  cuisine:     "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&q=80",
 };
 
 export default function Categories() {
+  const { categories, loading: catsLoading } = useCategories();
+  const { products }                          = useProducts();
+
   return (
     <main className="categories-page">
 
@@ -28,9 +31,10 @@ export default function Categories() {
         <div className="cat-visual-grid">
           {categories.map((cat, i) => {
             const count = products.filter(p => p.category === cat.id).length;
+            const imgSrc = CAT_IMGS[cat.id] ?? "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&q=80";
             return (
               <Link key={cat.id} to={`/boutique?cat=${cat.id}`} className="cat-visual-card">
-                <img src={CAT_IMGS[cat.id]} alt={cat.label} loading="lazy" />
+                <img src={imgSrc} alt={cat.label} loading="lazy" />
                 <div className="cat-visual-card-info">
                   <span className="cat-visual-card-num">0{i + 1}</span>
                   <span className="cat-visual-card-name">{cat.label}</span>
@@ -48,12 +52,13 @@ export default function Categories() {
       {/* Products per category */}
       {categories.map((cat, i) => {
         const catProducts = products.filter(p => p.category === cat.id).slice(0, 4);
+        if (!catProducts.length) return null;
         return (
           <section key={cat.id} className="cat-products-section">
             <div className="cat-section-header">
               <div className="cat-section-title">
                 <div className="cat-title-icon">
-                  <i className={`bi ${cat.icon}`} />
+                  <i className={`bi ${cat.icon || "bi-tag"}`} />
                 </div>
                 <div>
                   <span className="label-small">Collection 0{i + 1}</span>

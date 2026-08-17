@@ -239,3 +239,18 @@
 @media (max-width: 500px) {
   .products-grid-shop { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ── Spinner chargement ── */
+.shop-loading {
+  display: flex; align-items: center; justify-content: center;
+  padding: 6rem 0;
+}
+.shop-spinner {
+  display: block;
+  width: 34px; height: 34px;
+  border: 3px solid rgba(255,85,0,0.15);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: shop-spin 0.7s linear infinite;
+}
+@keyframes shop-spin { to { transform: rotate(360deg); } }

@@ -1,24 +1,28 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { products, categories } from "../data/products";
+import { useProducts, useCategories } from "../hooks/useProducts";
+import { formatPrice } from "../data/products";
 import ProductCard from "../components/ProductCard";
 import "./Shop.css";
 
 const SORTS = [
-  { value: "default", label: "Par défaut" },
-  { value: "price-asc", label: "Prix ↑" },
+  { value: "default",    label: "Par défaut" },
+  { value: "price-asc",  label: "Prix ↑" },
   { value: "price-desc", label: "Prix ↓" },
-  { value: "rating", label: "Meilleures notes" },
+  { value: "rating",     label: "Meilleures notes" },
 ];
 
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [sort, setSort] = useState("default");
-  const [maxPrice, setMaxPrice] = useState(60000);
+  const [sort,        setSort]        = useState("default");
+  const [maxPrice,    setMaxPrice]    = useState(60000);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const activeCategory = searchParams.get("cat") || "all";
-  const searchQuery = searchParams.get("search") || "";
+  const activeCategory = searchParams.get("cat")    || "all";
+  const searchQuery    = searchParams.get("search") || "";
+
+  const { products, loading, error } = useProducts();
+  const { categories }               = useCategories();
 
   const setCategory = (cat) => {
     const p = new URLSearchParams(searchParams);
@@ -33,14 +37,17 @@ export default function Shop() {
     if (activeCategory !== "all") list = list.filter(p => p.category === activeCategory);
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      list = list.filter(p => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
+      list = list.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        (p.description ?? "").toLowerCase().includes(q)
+      );
     }
     list = list.filter(p => p.price <= maxPrice);
-    if (sort === "price-asc") list.sort((a, b) => a.price - b.price);
-    else if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
-    else if (sort === "rating") list.sort((a, b) => b.rating - a.rating);
+    if (sort === "price-asc")  list.sort((a, b) => a.price - b.price);
+    if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
+    if (sort === "rating")     list.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
     return list;
-  }, [activeCategory, searchQuery, maxPrice, sort]);
+  }, [products, activeCategory, searchQuery, maxPrice, sort]);
 
   const currentCat = categories.find(c => c.id === activeCategory);
 
@@ -52,7 +59,9 @@ export default function Shop() {
           <h1>
             {searchQuery ? `"${searchQuery}"` : currentCat ? currentCat.label : "Toute la boutique"}
           </h1>
-          <p className="shop-hero__count">{filtered.length} ARTICLE{filtered.length !== 1 ? "S" : ""}</p>
+          <p className="shop-hero__count">
+            {loading ? "…" : `${filtered.length} ARTICLE${filtered.length !== 1 ? "S" : ""}`}
+          </p>
         </div>
       </section>
 
@@ -75,7 +84,7 @@ export default function Shop() {
               {categories.map(cat => (
                 <li key={cat.id}>
                   <button className={activeCategory === cat.id ? "active" : ""} onClick={() => setCategory(cat.id)}>
-                    <i className={`bi ${cat.icon}`} /> {cat.label}
+                    <i className={`bi ${cat.icon || "bi-tag"}`} /> {cat.label}
                     <span className="cat-count">{products.filter(p => p.category === cat.id).length}</span>
                   </button>
                 </li>
@@ -86,7 +95,8 @@ export default function Shop() {
           <div className="sidebar__section">
             <p className="sidebar__title">Prix maximum</p>
             <div className="price-range">
-              <input type="range" min={0} max={60000} step={500} value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} />
+              <input type="range" min={0} max={60000} step={500} value={maxPrice}
+                onChange={e => setMaxPrice(Number(e.target.value))} />
               <div className="price-labels">
                 <span>0</span>
                 <span className="price-val">{new Intl.NumberFormat("fr-FR").format(maxPrice)} FCFA</span>
@@ -110,7 +120,9 @@ export default function Shop() {
             <button className="filter-toggle" onClick={() => setSidebarOpen(true)}>
               <i className="bi bi-sliders" /> Filtres
             </button>
-            <span className="result-count">{filtered.length} RÉSULTAT{filtered.length !== 1 ? "S" : ""}</span>
+            <span className="result-count">
+              {loading ? "…" : `${filtered.length} RÉSULTAT${filtered.length !== 1 ? "S" : ""}`}
+            </span>
             <div className="sort-wrap">
               <i className="bi bi-sort-down" />
               <select value={sort} onChange={e => setSort(e.target.value)}>
@@ -136,7 +148,17 @@ export default function Shop() {
             </div>
           )}
 
-          {filtered.length === 0 ? (
+          {loading ? (
+            <div className="shop-loading">
+              <span className="shop-spinner" />
+            </div>
+          ) : error ? (
+            <div className="empty-state">
+              <i className="bi bi-wifi-off" />
+              <h3>Connexion impossible</h3>
+              <p>{error}</p>
+            </div>
+          ) : filtered.length === 0 ? (
             <div className="empty-state">
               <i className="bi bi-search" />
               <h3>Aucun produit trouvé</h3>

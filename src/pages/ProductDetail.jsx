@@ -1,22 +1,33 @@
 ﻿import { useParams, Link } from "react-router-dom";
 import { useState } from "react";
-import { products, formatPrice, categories } from "../data/products";
+import { useProduct, useProducts, useCategories } from "../hooks/useProducts";
+import { formatPrice } from "../data/products";
 import { useCart } from "../context/CartContext";
 import ProductCard from "../components/ProductCard";
 import "./ProductDetail.css";
 
 export default function ProductDetail() {
-  const { id } = useParams();
-  const product = products.find(p => p.id === Number(id));
+  const { id }  = useParams();
+  const { product, loading, error } = useProduct(id);
+  const { products } = useProducts();
+  const { categories } = useCategories();
   const { add } = useCart();
 
-  const [activeImg, setActiveImg]     = useState(0);
-  const [selectedSize, setSelectedSize]   = useState(null);
+  const [activeImg,     setActiveImg]     = useState(0);
+  const [selectedSize,  setSelectedSize]  = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
-  const [tab, setTab] = useState("description");
-  const [addedToCart, setAddedToCart] = useState(false);
+  const [tab,           setTab]           = useState("description");
+  const [addedToCart,   setAddedToCart]   = useState(false);
 
-  if (!product) {
+  if (loading) {
+    return (
+      <main className="detail-page" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
+        <span style={{ width: 36, height: 36, border: "3px solid rgba(255,85,0,0.15)", borderTopColor: "#ff5500", borderRadius: "50%", animation: "spin 0.7s linear infinite", display: "block" }} />
+      </main>
+    );
+  }
+
+  if (error || !product) {
     return (
       <main className="not-found-page">
         <i className="bi bi-exclamation-circle" />
@@ -28,7 +39,7 @@ export default function ProductDetail() {
   }
 
   const gallery  = product.images?.length ? product.images : [product.image];
-  const catName  = categories.find(c => c.id === product.category)?.label || product.category;
+  const catLabel = categories.find(c => c.id === product.category)?.label || product.category;
   const related  = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
   const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : null;
 
@@ -60,7 +71,7 @@ export default function ProductDetail() {
           <i className="bi bi-chevron-right" />
           <Link to="/boutique">Boutique</Link>
           <i className="bi bi-chevron-right" />
-          <Link to={`/boutique?cat=${product.category}`}>{catName}</Link>
+          <Link to={`/boutique?cat=${product.category}`}>{catLabel}</Link>
           <i className="bi bi-chevron-right" />
           <span>{product.name}</span>
         </nav>
@@ -70,49 +81,24 @@ export default function ProductDetail() {
       <section className="detail-section">
         <div className="detail-grid">
 
-          {/* ── Galerie ── */}
+          {/* Galerie */}
           <div className="detail-gallery">
-            {/* Image principale */}
             <div className="gallery-main">
-              <img
-                key={activeImg}
-                src={gallery[activeImg]}
-                alt={`${product.name} ${activeImg + 1}`}
-                className="gallery-main__img"
-              />
+              <img key={activeImg} src={gallery[activeImg]} alt={`${product.name} ${activeImg + 1}`} className="gallery-main__img" />
               {discount && <span className="img-badge img-badge--promo">−{discount}%</span>}
               {product.badge === "Nouveau" && !discount && <span className="img-badge img-badge--new">New</span>}
-
-              {/* Flèches nav si plus d'une image */}
               {gallery.length > 1 && (
                 <>
-                  <button className="gallery-arrow gallery-arrow--prev" onClick={prev} aria-label="Image précédente">
-                    <i className="bi bi-chevron-left" />
-                  </button>
-                  <button className="gallery-arrow gallery-arrow--next" onClick={next} aria-label="Image suivante">
-                    <i className="bi bi-chevron-right" />
-                  </button>
+                  <button className="gallery-arrow gallery-arrow--prev" onClick={prev} aria-label="Précédent"><i className="bi bi-chevron-left" /></button>
+                  <button className="gallery-arrow gallery-arrow--next" onClick={next} aria-label="Suivant"><i className="bi bi-chevron-right" /></button>
+                  <div className="gallery-counter">{activeImg + 1}/{gallery.length}</div>
                 </>
               )}
-
-              {/* Compteur */}
-              {gallery.length > 1 && (
-                <div className="gallery-counter">
-                  {activeImg + 1}/{gallery.length}
-                </div>
-              )}
             </div>
-
-            {/* Thumbnails */}
             {gallery.length > 1 && (
               <div className="gallery-thumbs">
                 {gallery.map((img, i) => (
-                  <button
-                    key={i}
-                    className={`gallery-thumb ${i === activeImg ? "is-active" : ""}`}
-                    onClick={() => setActiveImg(i)}
-                    aria-label={`Voir image ${i + 1}`}
-                  >
+                  <button key={i} className={`gallery-thumb ${i === activeImg ? "is-active" : ""}`} onClick={() => setActiveImg(i)}>
                     <img src={img} alt={`${product.name} ${i + 1}`} />
                   </button>
                 ))}
@@ -120,34 +106,34 @@ export default function ProductDetail() {
             )}
           </div>
 
-          {/* ── Info ── */}
+          {/* Info */}
           <div className="detail-info">
-            <Link to={`/boutique?cat=${product.category}`} className="detail-cat">{catName}</Link>
+            <Link to={`/boutique?cat=${product.category}`} className="detail-cat">{catLabel}</Link>
             <h1>{product.name}</h1>
 
             <div className="detail-rating">
               <div className="stars">
                 {[...Array(5)].map((_, i) => (
-                  <i key={i} className={`bi ${i < Math.floor(product.rating) ? "bi-star-fill" : i < product.rating ? "bi-star-half" : "bi-star"}`} />
+                  <i key={i} className={`bi ${i < Math.floor(product.rating ?? 0) ? "bi-star-fill" : i < (product.rating ?? 0) ? "bi-star-half" : "bi-star"}`} />
                 ))}
               </div>
-              <span className="rating-val">{product.rating}</span>
-              <span className="rating-count">({product.reviews} avis)</span>
+              <span className="rating-val">{product.rating ?? "—"}</span>
+              <span className="rating-count">({product.reviews ?? 0} avis)</span>
             </div>
 
             <div className="detail-price">
               <span className="price-main">{formatPrice(product.price)}</span>
-              {product.oldPrice && <>
-                <span className="price-crossed">{formatPrice(product.oldPrice)}</span>
-                <span className="price-discount">−{discount}%</span>
-              </>}
+              {product.oldPrice && (
+                <>
+                  <span className="price-crossed">{formatPrice(product.oldPrice)}</span>
+                  <span className="price-discount">−{discount}%</span>
+                </>
+              )}
             </div>
 
             {product.sizes?.length > 0 && product.sizes[0] !== "Taille unique" && (
               <div className="detail-option">
-                <label>
-                  Taille {selectedSize && <span className="option-selected">{selectedSize}</span>}
-                </label>
+                <label>Taille {selectedSize && <span className="option-selected">{selectedSize}</span>}</label>
                 <div className="size-grid">
                   {product.sizes.map(s => (
                     <button key={s} className={`size-btn ${selectedSize === s ? "active" : ""}`} onClick={() => setSelectedSize(s)}>{s}</button>
@@ -158,9 +144,7 @@ export default function ProductDetail() {
 
             {product.colors?.length > 0 && (
               <div className="detail-option">
-                <label>
-                  Couleur {selectedColor && <span className="option-selected">{selectedColor}</span>}
-                </label>
+                <label>Couleur {selectedColor && <span className="option-selected">{selectedColor}</span>}</label>
                 <div className="colors-list">
                   {product.colors.map(c => (
                     <button key={c} className={`color-btn ${selectedColor === c ? "active" : ""}`} onClick={() => setSelectedColor(c)}>{c}</button>
@@ -170,19 +154,12 @@ export default function ProductDetail() {
             )}
 
             <div className="detail-cta">
-              {/* Ajouter au panier */}
-              <button
-                className={`btn-add-cart ${addedToCart ? "added" : ""}`}
-                onClick={handleAddToCart}
-              >
+              <button className={`btn-add-cart ${addedToCart ? "added" : ""}`} onClick={handleAddToCart}>
                 <i className={`bi bi-${addedToCart ? "check-lg" : "bag-plus"}`} />
                 {addedToCart ? "Ajouté au panier !" : "Ajouter au panier"}
               </button>
-
-              {/* Commander direct WA */}
               <a href={buildWhatsAppLink()} className="btn-order-main" target="_blank" rel="noreferrer">
-                <i className="bi bi-whatsapp" />
-                Commander via WhatsApp
+                <i className="bi bi-whatsapp" /> Commander via WhatsApp
               </a>
             </div>
 
@@ -207,8 +184,8 @@ export default function ProductDetail() {
         <div className="tab-content">
           {tab === "description" && (
             <div className="tab-desc">
-              <p>{product.description}</p>
-              {product.sizes?.[0] !== "Taille unique" && product.sizes?.length > 0 && (
+              <p>{product.description || "Aucune description disponible."}</p>
+              {product.sizes?.length > 0 && product.sizes[0] !== "Taille unique" && (
                 <p><strong>Tailles :</strong> {product.sizes.join(", ")}</p>
               )}
               {product.colors?.length > 0 && <p><strong>Coloris :</strong> {product.colors.join(", ")}</p>}
@@ -217,22 +194,22 @@ export default function ProductDetail() {
           {tab === "livraison" && (
             <div className="tab-desc">
               <h4><i className="bi bi-truck" /> Livraison</h4>
-              <p>Livraison à Porto-Novo en 24h, partout au Bénin en 48–72h. Livraison à domicile disponible.</p>
+              <p>Livraison à Porto-Novo en 24h, partout au Bénin en 48–72h.</p>
               <h4><i className="bi bi-cash-coin" /> Paiement</h4>
               <p>Paiement à la livraison, MTN Mobile Money, Moov Money acceptés.</p>
               <h4><i className="bi bi-whatsapp" /> Commander</h4>
-              <p>Cliquez sur "Commander via WhatsApp" ou ajoutez au panier pour commander plusieurs articles à la fois.</p>
+              <p>Cliquez sur "Commander via WhatsApp" ou ajoutez au panier.</p>
             </div>
           )}
           {tab === "avis" && (
             <div className="tab-reviews">
               <div className="reviews-summary">
                 <div className="summary-score">
-                  <strong>{product.rating}</strong>
+                  <strong>{product.rating ?? "—"}</strong>
                   <div className="stars">
-                    {[...Array(5)].map((_, i) => <i key={i} className={`bi ${i < Math.floor(product.rating) ? "bi-star-fill" : "bi-star"}`} />)}
+                    {[...Array(5)].map((_, i) => <i key={i} className={`bi ${i < Math.floor(product.rating ?? 0) ? "bi-star-fill" : "bi-star"}`} />)}
                   </div>
-                  <span>{product.reviews} avis</span>
+                  <span>{product.reviews ?? 0} avis</span>
                 </div>
               </div>
               <div className="reviews-list">
