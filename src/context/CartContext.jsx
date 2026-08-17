@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, useCallback } from "react";
 import { formatPrice } from "../data/products";
+import { createOrder } from "../data/api";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const [items, setItems] = useState([]); // { product, size, color, qty }
+  const [items, setItems] = useState([]);
 
   const add = useCallback((product, size = null, color = null) => {
     setItems(prev => {
@@ -42,7 +43,7 @@ export function CartProvider({ children }) {
   const total = items.reduce((sum, i) => sum + i.product.price * i.qty, 0);
   const count = items.reduce((sum, i) => sum + i.qty, 0);
 
-  // Construit le message WhatsApp avec tous les articles
+  // ── Construit le message WhatsApp ──────────────────────
   const buildWhatsAppMessage = () => {
     const lines = items.map(i => {
       const size  = i.size  ? `\n   Taille : ${i.size}`  : "";
@@ -56,8 +57,40 @@ export function CartProvider({ children }) {
     return `https://wa.me/2290129140143?text=${encodeURIComponent(msg)}`;
   };
 
+  // ── Enregistre la commande dans l'API puis ouvre WhatsApp ──
+  const submitOrder = useCallback(async ({ customer, phone, city } = {}) => {
+    const waUrl = buildWhatsAppMessage();
+
+    // Payload pour l'API
+    const payload = {
+      customer: customer || "Client WhatsApp",
+      phone:    phone    || "+229",
+      city:     city     || null,
+      items: items.map(i => ({
+        product_id: i.product.id,
+        name:       i.product.name,
+        qty:        i.qty,
+        price:      i.product.price,
+        size:       i.size  ?? null,
+        color:      i.color ?? null,
+      })),
+      total,
+    };
+
+    // On enregistre en arrière-plan — si ça échoue, le client passe quand même sur WA
+    createOrder(payload).catch(err => console.warn("Order API error:", err));
+
+    // Ouvre WhatsApp immédiatement
+    window.open(waUrl, "_blank", "noopener,noreferrer");
+  }, [items, total]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
-    <CartContext.Provider value={{ items, add, remove, updateQty, clear, total, count, buildWhatsAppMessage }}>
+    <CartContext.Provider value={{
+      items, add, remove, updateQty, clear,
+      total, count,
+      buildWhatsAppMessage,
+      submitOrder,
+    }}>
       {children}
     </CartContext.Provider>
   );

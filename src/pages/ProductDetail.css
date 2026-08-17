@@ -161,13 +161,27 @@
 .btn-order-main {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   background: var(--wa); color: #fff;
+  border: none; cursor: pointer;
+  font-family: "Outfit", sans-serif;
   font-size: 0.82rem; font-weight: 800;
   letter-spacing: 1px; text-transform: uppercase;
-  padding: 16px 28px; text-decoration: none;
-  transition: background 0.15s;
+  padding: 16px 28px;
+  transition: background 0.15s, opacity 0.15s;
 }
-.btn-order-main:hover { background: var(--wa-hover); }
+.btn-order-main:hover:not(:disabled) { background: var(--wa-hover); }
+.btn-order-main:disabled { opacity: 0.7; cursor: not-allowed; }
 .btn-order-main i { font-size: 1.1rem; }
+
+.detail-spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: detail-spin 0.65s linear infinite;
+  display: inline-block; flex-shrink: 0;
+}
+@keyframes detail-spin { to { transform: rotate(360deg); } }
+@keyframes spin         { to { transform: rotate(360deg); } }
 
 /* Trust */
 .trust-badges {
@@ -272,13 +286,70 @@
 .not-found-page p { color: var(--text-3); font-size: 0.9rem; }
 .btn-back { color: var(--accent); font-weight: 700; font-size: 0.85rem; border-bottom: 1px solid var(--accent); padding-bottom: 1px; }
 
-/* Responsive */
+/* ══ RESPONSIVE ══════════════════════════════════════════ */
 @media (max-width: 900px) {
-  .detail-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .detail-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
   .detail-gallery { position: static; }
+  .detail-section { padding: 0; }
+  .tabs-section { padding: 2rem 1.2rem; }
+  .related-section { padding: 2.5rem 1.2rem; }
+  .breadcrumb-bar { padding: 0.75rem 1.2rem; }
   .products-grid-rel { grid-template-columns: repeat(2, 1fr); }
-  .detail-section { padding: 2.5rem 1.5rem; }
-  .tabs-section { padding: 3rem 1.5rem; }
-  .related-section { padding: 3rem 1.5rem; }
-  .breadcrumb-bar { padding: 1rem 1.5rem; }
+}
+
+@media (max-width: 600px) {
+  /* Galerie pleine largeur */
+  .detail-gallery { gap: 0.5rem; padding: 0; }
+  .gallery-main { aspect-ratio: 4/3; border-radius: 0; }
+  .gallery-main__img { object-fit: cover; }
+  .gallery-thumbs { padding: 0.5rem 1rem; }
+  .gallery-thumb { width: 52px; height: 52px; }
+
+  /* Info */
+  .detail-info {
+    gap: 1.2rem;
+    padding: 1.2rem 1rem 2rem;
+  }
+  .detail-info h1 {
+    font-size: 1.5rem;
+    letter-spacing: -0.5px;
+    margin-top: 0;
+  }
+
+  /* Prix */
+  .detail-price { padding: 1rem 0; gap: 0.7rem; flex-wrap: wrap; }
+  .price-main { font-size: 1.6rem; }
+  .price-crossed { font-size: 0.85rem; }
+
+  /* Options tailles/couleurs */
+  .size-btn { padding: 8px 12px; font-size: 0.82rem; min-width: 40px; }
+  .color-btn { padding: 7px 12px; font-size: 0.78rem; }
+
+  /* CTA — boutons pleine largeur */
+  .detail-cta { gap: 0.6rem; }
+  .btn-add-cart,
+  .btn-order-main { padding: 15px; font-size: 0.8rem; width: 100%; }
+
+  /* Trust badges */
+  .trust-badges { gap: 0.8rem; }
+  .trust-item { font-size: 0.68rem; }
+
+  /* Breadcrumb raccourci */
+  .breadcrumb { font-size: 0.65rem; }
+
+  /* Tabs */
+  .tabs-nav button {
+    padding: 0.7rem 0.8rem;
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+  }
+  .tab-content { max-width: 100%; }
+  .tab-desc p { font-size: 0.85rem; }
+
+  /* Related */
+  .products-grid-rel { grid-template-columns: repeat(2, 1fr); }
+  .section-header-rel h2 { font-size: 1.2rem; }
 }

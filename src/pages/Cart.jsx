@@ -1,10 +1,19 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { formatPrice } from "../data/products";
 import "./Cart.css";
 
 export default function Cart() {
-  const { items, remove, updateQty, clear, total, count, buildWhatsAppMessage } = useCart();
+  const { items, remove, updateQty, clear, total, count, submitOrder } = useCart();
+  const [ordering, setOrdering] = useState(false);
+
+  const handleOrder = async () => {
+    setOrdering(true);
+    await submitOrder();
+    clear();
+    setOrdering(false);
+  };
 
   if (items.length === 0) {
     return (
@@ -13,9 +22,7 @@ export default function Cart() {
           <i className="bi bi-bag" />
           <h2>Votre panier est vide</h2>
           <p>Ajoutez des articles depuis la boutique pour commencer.</p>
-          <Link to="/boutique" className="btn-go-shop">
-            Voir la boutique
-          </Link>
+          <Link to="/boutique" className="btn-go-shop">Voir la boutique</Link>
         </div>
       </main>
     );
@@ -32,14 +39,13 @@ export default function Cart() {
 
       <div className="cart-layout container">
 
-        {/* Liste articles */}
+        {/* Articles */}
         <div className="cart-items">
           {items.map((item, idx) => (
             <div key={idx} className="cart-item">
               <Link to={`/produit/${item.product.id}`} className="cart-item__img">
                 <img src={item.product.image} alt={item.product.name} />
               </Link>
-
               <div className="cart-item__info">
                 <span className="cart-item__cat">{item.product.category}</span>
                 <Link to={`/produit/${item.product.id}`} className="cart-item__name">
@@ -48,7 +54,6 @@ export default function Cart() {
                 {item.size  && <span className="cart-item__meta">Taille : <strong>{item.size}</strong></span>}
                 {item.color && <span className="cart-item__meta">Couleur : <strong>{item.color}</strong></span>}
               </div>
-
               <div className="cart-item__qty">
                 <button onClick={() => updateQty(item.product, item.size, item.color, item.qty - 1)}>
                   <i className="bi bi-dash" />
@@ -58,21 +63,16 @@ export default function Cart() {
                   <i className="bi bi-plus" />
                 </button>
               </div>
-
               <div className="cart-item__price">
                 {formatPrice(item.product.price * item.qty)}
               </div>
-
-              <button
-                className="cart-item__remove"
+              <button className="cart-item__remove"
                 onClick={() => remove(item.product, item.size, item.color)}
-                aria-label="Supprimer"
-              >
+                aria-label="Supprimer">
                 <i className="bi bi-x" />
               </button>
             </div>
           ))}
-
           <button className="cart-clear" onClick={clear}>
             <i className="bi bi-trash" /> Vider le panier
           </button>
@@ -81,7 +81,6 @@ export default function Cart() {
         {/* Récap */}
         <div className="cart-summary">
           <h3>Récapitulatif</h3>
-
           <div className="cart-summary__lines">
             {items.map((item, idx) => (
               <div key={idx} className="summary-line">
@@ -90,26 +89,26 @@ export default function Cart() {
               </div>
             ))}
           </div>
-
           <div className="cart-summary__total">
             <span>Total</span>
             <strong>{formatPrice(total)}</strong>
           </div>
-
           <p className="cart-summary__note">
             <i className="bi bi-info-circle" />
             La livraison sera confirmée via WhatsApp.
           </p>
 
-          <a
-            href={buildWhatsAppMessage()}
+          {/* Bouton commander — enregistre la commande puis ouvre WA */}
+          <button
             className="cart-order-btn"
-            target="_blank"
-            rel="noreferrer"
+            onClick={handleOrder}
+            disabled={ordering}
           >
-            <i className="bi bi-whatsapp" />
-            Commander via WhatsApp
-          </a>
+            {ordering
+              ? <><span className="cart-spinner" /> Envoi en cours…</>
+              : <><i className="bi bi-whatsapp" /> Commander via WhatsApp</>
+            }
+          </button>
 
           <Link to="/boutique" className="cart-continue">
             ← Continuer mes achats

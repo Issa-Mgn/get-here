@@ -15,7 +15,6 @@ const SORTS = [
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [sort,        setSort]        = useState("default");
-  const [maxPrice,    setMaxPrice]    = useState(60000);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const activeCategory = searchParams.get("cat")    || "all";
@@ -23,6 +22,15 @@ export default function Shop() {
 
   const { products, loading, error } = useProducts();
   const { categories }               = useCategories();
+
+  // maxPrice calculé sur le prix max réel des produits
+  const priceMax = useMemo(
+    () => products.length ? Math.max(...products.map(p => p.price)) : 1000000,
+    [products]
+  );
+  // Initialise maxPrice à priceMax quand les produits chargent
+  const [maxPrice, setMaxPrice] = useState(null);
+  const effectiveMax = maxPrice ?? priceMax;
 
   const setCategory = (cat) => {
     const p = new URLSearchParams(searchParams);
@@ -42,12 +50,12 @@ export default function Shop() {
         (p.description ?? "").toLowerCase().includes(q)
       );
     }
-    list = list.filter(p => p.price <= maxPrice);
+    list = list.filter(p => p.price <= effectiveMax);
     if (sort === "price-asc")  list.sort((a, b) => a.price - b.price);
     if (sort === "price-desc") list.sort((a, b) => b.price - a.price);
     if (sort === "rating")     list.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
     return list;
-  }, [products, activeCategory, searchQuery, maxPrice, sort]);
+  }, [products, activeCategory, searchQuery, effectiveMax, sort]);
 
   const currentCat = categories.find(c => c.id === activeCategory);
 
@@ -95,11 +103,12 @@ export default function Shop() {
           <div className="sidebar__section">
             <p className="sidebar__title">Prix maximum</p>
             <div className="price-range">
-              <input type="range" min={0} max={60000} step={500} value={maxPrice}
+              <input type="range" min={0} max={priceMax} step={500}
+                value={effectiveMax}
                 onChange={e => setMaxPrice(Number(e.target.value))} />
               <div className="price-labels">
                 <span>0</span>
-                <span className="price-val">{new Intl.NumberFormat("fr-FR").format(maxPrice)} FCFA</span>
+                <span className="price-val">{new Intl.NumberFormat("fr-FR").format(effectiveMax)} FCFA</span>
               </div>
             </div>
           </div>

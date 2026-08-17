@@ -1,7 +1,8 @@
 ﻿import { useParams, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useProduct, useProducts, useCategories } from "../hooks/useProducts";
 import { formatPrice } from "../data/products";
+import { createOrder } from "../data/api";
 import { useCart } from "../context/CartContext";
 import ProductCard from "../components/ProductCard";
 import "./ProductDetail.css";
@@ -9,20 +10,22 @@ import "./ProductDetail.css";
 export default function ProductDetail() {
   const { id }  = useParams();
   const { product, loading, error } = useProduct(id);
-  const { products } = useProducts();
+  const { products }   = useProducts();
   const { categories } = useCategories();
-  const { add } = useCart();
+  const { add }        = useCart();
 
   const [activeImg,     setActiveImg]     = useState(0);
   const [selectedSize,  setSelectedSize]  = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [tab,           setTab]           = useState("description");
   const [addedToCart,   setAddedToCart]   = useState(false);
+  const [ordering,      setOrdering]      = useState(false);
 
+  /* ── Loading ── */
   if (loading) {
     return (
-      <main className="detail-page" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
-        <span style={{ width: 36, height: 36, border: "3px solid rgba(255,85,0,0.15)", borderTopColor: "#ff5500", borderRadius: "50%", animation: "spin 0.7s linear infinite", display: "block" }} />
+      <main className="detail-page" style={{ display:"flex", alignItems:"center", justifyContent:"center", minHeight:"60vh" }}>
+        <span style={{ width:36, height:36, border:"3px solid rgba(255,85,0,0.15)", borderTopColor:"#ff5500", borderRadius:"50%", animation:"spin 0.7s linear infinite", display:"block" }} />
       </main>
     );
   }
@@ -49,13 +52,32 @@ export default function ProductDetail() {
     setTimeout(() => setAddedToCart(false), 1400);
   };
 
-  const buildWhatsAppLink = () => {
+  /* ── Commander via WA — enregistre la commande d'abord ── */
+  const handleOrderWA = async () => {
+    setOrdering(true);
     const sizeStr  = selectedSize  ? `\nTaille : *${selectedSize}*`  : "";
     const colorStr = selectedColor ? `\nCouleur : *${selectedColor}*` : "";
-    const msg = encodeURIComponent(
+    const waMsg = encodeURIComponent(
       `Bonjour GetHere ! 👋\n\nJe veux commander :\n*${product.name}*${sizeStr}${colorStr}\n\nPrix : *${formatPrice(product.price)}*\n\nMerci de confirmer la disponibilité et les modalités de livraison 🙏`
     );
-    return `https://wa.me/2290129140143?text=${msg}`;
+
+    // Enregistre en arrière-plan — ne bloque pas WA
+    createOrder({
+      customer:   "Client WhatsApp",
+      phone:      "+229",
+      items: [{
+        product_id: product.id,
+        name:       product.name,
+        qty:        1,
+        price:      product.price,
+        size:       selectedSize  ?? null,
+        color:      selectedColor ?? null,
+      }],
+      total: product.price,
+    }).catch(err => console.warn("Order error:", err));
+
+    window.open(`https://wa.me/2290129140143?text=${waMsg}`, "_blank", "noopener,noreferrer");
+    setOrdering(false);
   };
 
   const prev = () => setActiveImg(i => (i - 1 + gallery.length) % gallery.length);
@@ -158,9 +180,18 @@ export default function ProductDetail() {
                 <i className={`bi bi-${addedToCart ? "check-lg" : "bag-plus"}`} />
                 {addedToCart ? "Ajouté au panier !" : "Ajouter au panier"}
               </button>
-              <a href={buildWhatsAppLink()} className="btn-order-main" target="_blank" rel="noreferrer">
-                <i className="bi bi-whatsapp" /> Commander via WhatsApp
-              </a>
+
+              {/* Commander via WA — enregistre dans l'API */}
+              <button
+                className="btn-order-main"
+                onClick={handleOrderWA}
+                disabled={ordering}
+              >
+                {ordering
+                  ? <><span className="detail-spinner" /> En cours…</>
+                  : <><i className="bi bi-whatsapp" /> Commander via WhatsApp</>
+                }
+              </button>
             </div>
 
             <div className="trust-badges">
