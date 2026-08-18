@@ -20,6 +20,7 @@ export default function ProductDetail() {
   const [tab,           setTab]           = useState("description");
   const [addedToCart,   setAddedToCart]   = useState(false);
   const [ordering,      setOrdering]      = useState(false);
+  const [lightbox,      setLightbox]      = useState(false);  // ← lightbox
 
   /* ── Loading ── */
   if (loading) {
@@ -83,6 +84,13 @@ export default function ProductDetail() {
   const prev = () => setActiveImg(i => (i - 1 + gallery.length) % gallery.length);
   const next = () => setActiveImg(i => (i + 1) % gallery.length);
 
+  // Navigation lightbox avec clavier
+  const handleKey = (e) => {
+    if (e.key === "ArrowRight") next();
+    if (e.key === "ArrowLeft")  prev();
+    if (e.key === "Escape")     setLightbox(false);
+  };
+
   return (
     <main className="detail-page">
 
@@ -109,6 +117,16 @@ export default function ProductDetail() {
               <img key={activeImg} src={gallery[activeImg]} alt={`${product.name} ${activeImg + 1}`} className="gallery-main__img" />
               {discount && <span className="img-badge img-badge--promo">−{discount}%</span>}
               {product.badge === "Nouveau" && !discount && <span className="img-badge img-badge--new">New</span>}
+
+              {/* Bouton zoom — ouvre le lightbox */}
+              <button
+                className="gallery-zoom-btn"
+                onClick={() => setLightbox(true)}
+                aria-label="Voir en plein écran"
+              >
+                <i className="bi bi-arrows-fullscreen" />
+              </button>
+
               {gallery.length > 1 && (
                 <>
                   <button className="gallery-arrow gallery-arrow--prev" onClick={prev} aria-label="Précédent"><i className="bi bi-chevron-left" /></button>
@@ -279,6 +297,79 @@ export default function ProductDetail() {
             {related.map(p => <ProductCard key={p.id} product={p} />)}
           </div>
         </section>
+      )}
+
+      {/* ── Lightbox plein écran ── */}
+      {lightbox && (
+        <div
+          className="lightbox-overlay"
+          onClick={() => setLightbox(false)}
+          onKeyDown={handleKey}
+          tabIndex={0}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Galerie photos"
+          ref={el => el?.focus()}
+        >
+          {/* Fermer */}
+          <button
+            className="lightbox-close"
+            onClick={() => setLightbox(false)}
+            aria-label="Fermer"
+          >
+            <i className="bi bi-x-lg" />
+          </button>
+
+          {/* Compteur */}
+          <div className="lightbox-counter">
+            {activeImg + 1} / {gallery.length}
+          </div>
+
+          {/* Image */}
+          <div className="lightbox-img-wrap" onClick={e => e.stopPropagation()}>
+            <img
+              key={activeImg}
+              src={gallery[activeImg]}
+              alt={`${product.name} ${activeImg + 1}`}
+              className="lightbox-img"
+            />
+          </div>
+
+          {/* Navigation */}
+          {gallery.length > 1 && (
+            <>
+              <button
+                className="lightbox-arrow lightbox-arrow--prev"
+                onClick={e => { e.stopPropagation(); prev(); }}
+                aria-label="Précédent"
+              >
+                <i className="bi bi-chevron-left" />
+              </button>
+              <button
+                className="lightbox-arrow lightbox-arrow--next"
+                onClick={e => { e.stopPropagation(); next(); }}
+                aria-label="Suivant"
+              >
+                <i className="bi bi-chevron-right" />
+              </button>
+            </>
+          )}
+
+          {/* Thumbnails */}
+          {gallery.length > 1 && (
+            <div className="lightbox-thumbs" onClick={e => e.stopPropagation()}>
+              {gallery.map((src, i) => (
+                <button
+                  key={i}
+                  className={`lightbox-thumb ${i === activeImg ? "active" : ""}`}
+                  onClick={() => setActiveImg(i)}
+                >
+                  <img src={src} alt={`${i + 1}`} />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       )}
     </main>
   );
