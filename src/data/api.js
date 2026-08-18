@@ -1,5 +1,5 @@
 // ── API client — site principal ────────────────────────────
-const API_URL = import.meta.env.VITE_API_URL || "https://gethere-api.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL || "https://get-here-server-nd17.onrender.com";
 
 async function get(path) {
   const res  = await fetch(`${API_URL}${path}`);
