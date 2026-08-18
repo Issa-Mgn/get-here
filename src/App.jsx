@@ -13,7 +13,7 @@ import Contact from "./pages/Contact";
 import Cart from "./pages/Cart";
 import "./App.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "https://get-here-server.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL || "https://get-here-server-nd17.onrender.com";
 
 // Enregistre une visite — throttle par session (1 visite / page / session)
 const visitedPaths = new Set();
