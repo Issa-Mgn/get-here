@@ -20,7 +20,7 @@ export default function About() {
               Née à Porto-Novo, GetHere est une boutique multiservices pensée pour
               simplifier le shopping quotidien — mode, beauté, maison, tout en un.
             </p>
-            <a href="https://wa.me/2290129140143" className="btn-wa" target="_blank" rel="noreferrer">
+            <a href="https://wa.me/2290191463965" className="btn-wa" target="_blank" rel="noreferrer">
               <i className="bi bi-whatsapp" /> Nous contacter
             </a>
           </div>
@@ -103,7 +103,7 @@ export default function About() {
             <Link to="/boutique" className="btn-primary">
               <i className="bi bi-grid" /> Voir la boutique
             </Link>
-            <a href="https://wa.me/2290129140143" className="btn-wa" target="_blank" rel="noreferrer">
+            <a href="https://wa.me/2290191463965" className="btn-wa" target="_blank" rel="noreferrer">
               <i className="bi bi-whatsapp" /> Commander
             </a>
           </div>

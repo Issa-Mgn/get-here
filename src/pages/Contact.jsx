@@ -11,7 +11,7 @@ export default function Contact() {
     const msg = encodeURIComponent(
       `Bonjour GetHere 👋\n\nNom : *${form.name}*\nTél : *${form.phone}*\nSujet : *${form.subject}*\n\n${form.message}`
     );
-    window.open(`https://wa.me/2290129140143?text=${msg}`, "_blank");
+    window.open(`https://wa.me/2290191463965?text=${msg}`, "_blank");
   };
 
   return (
@@ -36,11 +36,11 @@ export default function Contact() {
             <p>Réponse garantie en moins de 30 minutes pendant nos heures d'ouverture. WhatsApp est notre canal principal.</p>
 
             <div className="info-cards">
-              <a href="https://wa.me/2290129140143" target="_blank" rel="noreferrer" className="info-card primary">
+              <a href="https://wa.me/2290191463965" target="_blank" rel="noreferrer" className="info-card primary">
                 <div className="info-icon"><i className="bi bi-whatsapp" /></div>
                 <div>
                   <h4>WhatsApp</h4>
-                  <span>+229 01 29 14 01 43</span>
+                  <span>+229 01 91 46 39 65</span>
                   <small>Canal principal · Réponse rapide</small>
                 </div>
                 <i className="bi bi-arrow-right info-arrow" />
@@ -72,7 +72,7 @@ export default function Contact() {
             </div>
 
             <div className="contact-socials">
-              <a href="https://wa.me/2290129140143" target="_blank" rel="noreferrer" aria-label="WhatsApp"><i className="bi bi-whatsapp" /></a>
+              <a href="https://wa.me/2290191463965" target="_blank" rel="noreferrer" aria-label="WhatsApp"><i className="bi bi-whatsapp" /></a>
               <a href="#!" aria-label="Instagram"><i className="bi bi-instagram" /></a>
               <a href="#!" aria-label="Facebook"><i className="bi bi-facebook" /></a>
               <a href="#!" aria-label="TikTok"><i className="bi bi-tiktok" /></a>

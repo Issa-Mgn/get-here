@@ -44,7 +44,7 @@ export default function Home() {
           <p className="hero__desc">Tout ceux dont vous avez besoin, en un seul endroit.</p>
           <div className="hero__actions">
             <Link to="/boutique" className="hero__btn-main">Découvrir la boutique</Link>
-            <a href="https://wa.me/2290129140143?text=Bonjour%20GetHere%20!" target="_blank" rel="noreferrer" className="hero__btn-wa">
+            <a href="https://wa.me/2290191463965?text=Bonjour%20GetHere%20!" target="_blank" rel="noreferrer" className="hero__btn-wa">
               <i className="bi bi-whatsapp" /> Commander
             </a>
           </div>
@@ -138,7 +138,7 @@ export default function Home() {
           <p className="promo-sub">Promotions renouvelées. Commandez avant rupture de stock.</p>
           <div className="promo-actions">
             <Link to="/boutique" className="btn-solid">Voir les promos</Link>
-            <a href="https://wa.me/2290129140143" target="_blank" rel="noreferrer" className="btn-outline-wa">
+            <a href="https://wa.me/2290191463965" target="_blank" rel="noreferrer" className="btn-outline-wa">
               <i className="bi bi-whatsapp" /> Nous écrire
             </a>
           </div>
@@ -166,7 +166,7 @@ export default function Home() {
         <div className="why-section__left">
           <p className="label-small">Pourquoi nous</p>
           <h2>L'expérience<br /><span>GetHere</span></h2>
-          <a href="https://wa.me/2290129140143" target="_blank" rel="noreferrer"
+          <a href="https://wa.me/2290191463965" target="_blank" rel="noreferrer"
             className="btn-outline-wa" style={{ marginTop: "2rem", display: "inline-flex" }}>
             <i className="bi bi-whatsapp" /> Démarrer une commande
           </a>
@@ -217,7 +217,7 @@ export default function Home() {
         <div className="cta-final__inner">
           <h2>Prêt(e) à<br /><span>shopper ?</span></h2>
           <p>Des centaines de clients nous font confiance. Commandez en 2 minutes sur WhatsApp.</p>
-          <a href="https://wa.me/2290129140143?text=Bonjour%20GetHere%20!%20Je%20veux%20passer%20une%20commande%20%F0%9F%98%8A"
+          <a href="https://wa.me/2290191463965?text=Bonjour%20GetHere%20!%20Je%20veux%20passer%20une%20commande%20%F0%9F%98%8A"
             target="_blank" rel="noreferrer" className="btn-solid btn-solid--lg">
             <i className="bi bi-whatsapp" /> Démarrer ma commande
           </a>

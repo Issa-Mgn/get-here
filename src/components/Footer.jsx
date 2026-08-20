@@ -13,7 +13,7 @@ export default function Footer() {
           </Link>
           <p>Boutique multiservices & lifestyle à Porto-Novo. Mode, beauté, maison — tout en un.</p>
           <div className="footer__socials">
-            <a href="https://wa.me/2290129140143" target="_blank" rel="noreferrer" aria-label="WhatsApp"><i className="bi bi-whatsapp" /></a>
+            <a href="https://wa.me/2290191463965" target="_blank" rel="noreferrer" aria-label="WhatsApp"><i className="bi bi-whatsapp" /></a>
             <a href="#!" aria-label="Instagram"><i className="bi bi-instagram" /></a>
             <a href="#!" aria-label="Facebook"><i className="bi bi-facebook" /></a>
             <a href="#!" aria-label="TikTok"><i className="bi bi-tiktok" /></a>
@@ -48,7 +48,7 @@ export default function Footer() {
           <ul>
             <li>
               <i className="bi bi-whatsapp" />
-              <a href="https://wa.me/2290129140143" target="_blank" rel="noreferrer">+229 01 29 14 01 43</a>
+              <a href="https://wa.me/2290191463965" target="_blank" rel="noreferrer">+229 01 91 46 39 65</a>
             </li>
             <li>
               <i className="bi bi-geo-alt" />
@@ -60,7 +60,7 @@ export default function Footer() {
             </li>
           </ul>
           <a
-            href="https://wa.me/2290129140143"
+            href="https://wa.me/2290191463965"
             className="footer__wa-btn"
             target="_blank"
             rel="noreferrer"

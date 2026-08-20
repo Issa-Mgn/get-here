@@ -77,7 +77,7 @@ export default function ProductDetail() {
       total: product.price,
     }).catch(err => console.warn("Order error:", err));
 
-    window.open(`https://wa.me/2290129140143?text=${waMsg}`, "_blank", "noopener,noreferrer");
+    window.open(`https://wa.me/2290191463965?text=${waMsg}`, "_blank", "noopener,noreferrer");
     setOrdering(false);
   };
 

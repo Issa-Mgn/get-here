@@ -65,7 +65,7 @@ export default function Navbar() {
               <i className="bi bi-bag" />
               {count > 0 && <span className="nav__cart-badge">{count}</span>}
             </Link>
-            <a href="https://wa.me/2290129140143" target="_blank" rel="noreferrer" className="nav__order-btn">
+            <a href="https://wa.me/2290191463965" target="_blank" rel="noreferrer" className="nav__order-btn">
               <i className="bi bi-whatsapp" />
               <span>Commander</span>
             </a>
@@ -128,7 +128,7 @@ export default function Navbar() {
           ))}
         </nav>
         <a
-          href="https://wa.me/2290129140143"
+          href="https://wa.me/2290191463965"
           className="mobile-menu__wa"
           target="_blank"
           rel="noreferrer"

@@ -1,6 +1,6 @@
-// ─── Données fictives GetHere ───────────────────────────────────────────────
+﻿// ─── Données fictives GetHere ───────────────────────────────────────────────
 
-export const WHATSAPP_NUMBER = "2290129140143";
+export const WHATSAPP_NUMBER = "2290191463965";
 
 export const categories = [
   { id: "vetements",   label: "Vêtements",          icon: "bi-bag" },

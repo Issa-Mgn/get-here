@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from "react";
+﻿import { createContext, useContext, useState, useCallback } from "react";
 import { formatPrice } from "../data/products";
 import { createOrder } from "../data/api";
 
@@ -54,7 +54,7 @@ export function CartProvider({ children }) {
       `Bonjour GetHere ! 👋\n\nJe souhaite commander :\n\n` +
       lines.join("\n\n") +
       `\n\n*Total : ${formatPrice(total)}*\n\nMerci de confirmer la disponibilité et les modalités de livraison 🙏`;
-    return `https://wa.me/2290129140143?text=${encodeURIComponent(msg)}`;
+    return `https://wa.me/2290191463965?text=${encodeURIComponent(msg)}`;
   };
 
   // ── Enregistre la commande dans l'API puis ouvre WhatsApp ──
