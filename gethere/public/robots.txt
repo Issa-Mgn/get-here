@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /panier
+
+# Le domaine canonique est fourni par VITE_SITE_URL en production.
+Sitemap: https://get-here.netlify.app/sitemap.xml
