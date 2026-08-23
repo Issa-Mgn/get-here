@@ -17,6 +17,10 @@ dist-ssr
 .env.*
 !.env.example
 
+# Dépôts séparés
+dashboard/
+server/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

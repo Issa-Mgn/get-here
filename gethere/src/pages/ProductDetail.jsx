@@ -1,5 +1,5 @@
 ﻿import { useParams, Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useProduct, useProducts, useCategories } from "../hooks/useProducts";
 import { formatPrice } from "../data/products";
 import { createOrder } from "../data/api";
